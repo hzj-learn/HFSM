@@ -1,0 +1,185 @@
+#sudo: false
+
+language: cpp
+
+notifications:
+  email: true
+
+os: linux
+dist: trusty
+
+env:
+  global:
+    - TMPDIR=/tmp
+
+matrix:
+  include:
+
+    # GCC 4.9
+    - env: COMPILER=g++-4.9 BUILD_TYPE=Debug
+      addons: &gcc49
+        apt:
+          packages: g++-4.9
+          sources: ubuntu-toolchain-r-test
+
+    - env: COMPILER=g++-4.9 BUILD_TYPE=Release
+      addons: *gcc49
+
+    # GCC 5
+    - env: COMPILER=g++-5 BUILD_TYPE=Debug
+      addons: &gcc5
+        apt:
+          packages: g++-5
+          sources: ubuntu-toolchain-r-test
+
+    - env: COMPILER=g++-5 BUILD_TYPE=Release
+      addons: *gcc5
+
+    # GCC 6
+    - env: COMPILER=g++-6 BUILD_TYPE=Debug
+      addons: &gcc6
+        apt:
+          packages: g++-6
+          sources: ubuntu-toolchain-r-test
+
+    - env: COMPILER=g++-6 BUILD_TYPE=Release
+      addons: *gcc6
+
+    # GCC 7
+    - env: COMPILER=g++-7 BUILD_TYPE=Debug
+      addons: &gcc7
+        apt:
+          packages: g++-7
+          sources: ubuntu-toolchain-r-test
+
+    - env: COMPILER=g++-7 BUILD_TYPE=Release
+      addons: *gcc7
+
+    # GCC 8
+    - env: COMPILER=g++-8 BUILD_TYPE=Debug
+      addons: &gcc8
+        apt:
+          packages: g++-8
+          sources: ubuntu-toolchain-r-test
+
+    - env: COMPILER=g++-8 BUILD_TYPE=Release
+      addons: *gcc8
+
+    # Clang 3.6
+    - env: COMPILER=clang++-3.6 BUILD_TYPE=Debug
+      addons: &clang36
+        apt:
+          packages:
+            - clang-3.6
+            - g++-5
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+
+    - env: COMPILER=clang++-3.6 BUILD_TYPE=Release
+      addons: *clang36
+
+    # Clang 3.7
+    - env: COMPILER=clang++-3.7 BUILD_TYPE=Debug
+      addons: &clang37
+        apt:
+          packages:
+            - clang-3.7
+            - g++-5
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
+
+    - env: COMPILER=clang++-3.7 BUILD_TYPE=Release
+      addons: *clang37
+
+    # Clang 3.8
+    - env: COMPILER=clang++-3.8 BUILD_TYPE=Debug
+      addons: &clang38
+        apt:
+          packages:
+            - clang-3.8
+            - g++-5
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.8
+
+    - env: COMPILER=clang++-3.8 BUILD_TYPE=Release
+      addons: *clang38
+
+    # Clang 3.9
+    - env: COMPILER=clang++-3.9 BUILD_TYPE=Debug
+      addons: &clang39
+        apt:
+          packages:
+            - clang-3.9
+            - g++-5
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.9
+
+    - env: COMPILER=clang++-3.9 BUILD_TYPE=Release
+      addons: *clang39
+
+    # Clang 4.0
+    - env: COMPILER=clang++-4.0 BUILD_TYPE=Debug
+      addons: &clang4
+        apt:
+          packages:
+            - clang-4.0
+            - g++-5
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-4.0
+
+    - env: COMPILER=clang++-4.0 BUILD_TYPE=Release
+      addons: *clang4
+
+    # Clang 5.0
+    - env: COMPILER=clang++-5.0 BUILD_TYPE=Debug
+      addons: &clang5
+        apt:
+          packages:
+            - clang-5.0
+            - g++-5
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-5.0
+
+    - env: COMPILER=clang++-5.0 BUILD_TYPE=Release
+      addons: *clang5
+
+    # Clang 6.0
+    - env: COMPILER=clang++-6.0 BUILD_TYPE=Debug
+      addons: &clang6
+        apt:
+          packages:
+            - clang-6.0
+            - g++-6
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-6.0
+
+    - env: COMPILER=clang++-6.0 BUILD_TYPE=Release
+      addons: *clang6
+
+script:
+  - cd "${TRAVIS_BUILD_DIR}"
+  - mkdir build && cd build
+  - cmake .. -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_INSTALL_PREFIX=$TMPDIR/hfsm
+  - make install
+
+  - cd "${TRAVIS_BUILD_DIR}/examples/advanced_event_handling"
+  - mkdir build && cd build
+  - cmake .. -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+  - make
+
+  - cd "${TRAVIS_BUILD_DIR}/examples/basic_streetlight"
+  - mkdir build && cd build
+  - cmake .. -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+  - make
+
+  - cd "${TRAVIS_BUILD_DIR}/examples/debug_logger_interface"
+  - mkdir build && cd build
+  - cmake .. -DCMAKE_CXX_COMPILER=$COMPILER -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+  - make

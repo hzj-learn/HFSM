@@ -1,0 +1,7 @@
+﻿/binaries-*
+/build
+/hfsm_test.dir/Debug
+.idea
+.vs
+cmake-*
+*.user
